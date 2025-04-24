@@ -22,14 +22,14 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
-function page() {
+function Page() {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const debounced = useDebounceCallback(setUsername, 300);
-  
+
   const { toast } = useToast();
   const router = useRouter();
 
@@ -52,7 +52,7 @@ function page() {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`
           );
-          let message = response.data.message
+          let message = response.data.message;
           setUsernameMessage(message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
@@ -116,57 +116,60 @@ function page() {
                       }}
                     />
                   </FormControl>
-                  {isCheckingUsername && <Loader2 className="animate-spin"/>}
-                  <p className={`text-sm ${usernameMessage === 'username is unique' ? 'text-green-500' : 'text-red-500'}`}>{usernameMessage}</p>
+                  {isCheckingUsername && <Loader2 className="animate-spin" />}
+                  <p
+                    className={`text-sm ${
+                      usernameMessage === "username is unique"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {usernameMessage}
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
             />
-              <FormField
+            <FormField
               name="email"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel >Email</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="email"
-                      {...field}
-                    />
+                    <Input placeholder="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-              <FormField
+            <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                    type="password"
-                      placeholder="password"
-                      {...field}
-                    />
+                    <Input type="password" placeholder="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type='submit' disabled={isSubmitting}>
-              {
-                isSubmitting ? <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Please wait 
-                </> : ('Signup')
-              }
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                </>
+              ) : (
+                "Signup"
+              )}
             </Button>
           </form>
         </Form>
-         <div className="text-center mt-4">
+        <div className="text-center mt-4">
           <p>
-            Already a member?{' '}
+            Already a member?{" "}
             <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
               Sign in
             </Link>
@@ -176,4 +179,4 @@ function page() {
     </div>
   );
 }
-export default page;
+export default Page;
