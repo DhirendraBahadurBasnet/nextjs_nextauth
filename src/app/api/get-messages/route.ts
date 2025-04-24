@@ -17,10 +17,21 @@ export async function GET(request: Request) {
     );
   }
   const userId = new mongoose.Types.ObjectId(_user._id);
+  console.log(userId)
+
+//   const user = await UserModel.findOne({ email: session.user.email }).lean();
+// console.log("From DB _id:", user?._id, "Type:", typeof user?._id);
+
+const user = await UserModel.aggregate([
+  { $match: { _id: userId } },
+]).exec();
+
+console.log("Matched User (without unwind):", user);
+
   try {
     const user = await UserModel.aggregate([
       { $match: { _id: userId } },
-      { $unwind: '$messages' },
+      { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } },
       { $sort: { 'messages.createdAt': -1 } },
       { $group: { _id: '$_id', messages: { $push: '$messages' } } },
     ]).exec();
@@ -31,7 +42,6 @@ export async function GET(request: Request) {
         { status: 404 }
       );
     }
-
     return Response.json(
       { messages: user[0].messages },
       {
